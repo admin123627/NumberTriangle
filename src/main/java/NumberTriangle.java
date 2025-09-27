@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -108,26 +109,44 @@ public class NumberTriangle {
         // are more convenient to work with when reading the file contents.
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-
-
-        // TODO define any variables that you want to use to store things
-
-        // will need to return the top of the NumberTriangle,
-        // so might want a variable for that.
-        NumberTriangle top = null;
-
+        int rows = 0;
         String line = br.readLine();
         while (line != null) {
-
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
-            // TODO process the line
-
-            //read the next line
+            if (!line.trim().isEmpty()) rows++;
             line = br.readLine();
         }
         br.close();
+        // will need to return the top of the NumberTriangle,
+        // so might want a variable for that.
+        NumberTriangle top = null;
+        NumberTriangle[][] nodes = new NumberTriangle[rows][];
+        int r = 0;
+        inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
+        br = new BufferedReader(new InputStreamReader(inputStream));
+        line = br.readLine();
+
+        while (line != null) {
+            // remove when done; this line is included so running starter code prints the contents of the file
+            System.out.println(line);
+
+            String[] parts = line.split("\\s+");
+            nodes[r] = new NumberTriangle[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                int value = Integer.parseInt(parts[i]);
+                nodes[r][i] = new NumberTriangle(value);
+            }
+            //read the next line
+            r++;
+            line = br.readLine();
+        }
+        br.close();
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = 0; j < nodes[i].length; j++) {
+                nodes[i][j].left = nodes[i + 1][j]; // Child directly below
+                nodes[i][j].right = nodes[i + 1][j + 1]; // Child below to the right
+            }
+        }
+        top = nodes[0][0];
         return top;
     }
 
